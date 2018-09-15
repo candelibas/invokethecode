@@ -28,16 +28,20 @@ kontra.assets.load('mage.png', 'portal.png').then((wut) => {
   const midX = kontra.canvas.width / 2;
   const midY = kontra.canvas.height / 2;
 
-  let win = 0;
+  let colors = {
+    quas: '#33FFF8',
+    wex: '#EC18FF',
+    exort: '#FF6C00'
+  };
+
   let modalShowed = false;
-  let ultiPressed = false;
   let skillCombos = ['qqq', 'qqe', 'qqw', 'www', 'wwq', 'wwe', 'eee', 'eew', 'eeq', 'qwe'];
 
   const getRandomCombo = () => skillCombos[skillCombos.length * Math.random() | 0];
   let randomSelectedCombo = getRandomCombo();
   let typedCode = '';
 
-  console.log(randomSelectedCombo);
+  console.log('%c Here is your first combo: %c' + randomSelectedCombo.toUpperCase(), 'color: red; font-size: 16px', 'padding: 2px; background: black; color: orange; font-size: 16px;');
 
 
   let keyCheck = {
@@ -69,16 +73,15 @@ kontra.assets.load('mage.png', 'portal.png').then((wut) => {
     color: '#413d5e',
   });
 
-  
 
 
-  /* ELEMENTS */
+  /* ELEMENTS  */
   let quasEffect = kontra.sprite({
     x: midX - 50,
     y: midY + 220,
     width: 7,
     height: 7,
-    color: '#33FFF8',
+    color: colors.quas,
     dy:.1,
     radius: 7,
     render: function() {
@@ -118,11 +121,12 @@ kontra.assets.load('mage.png', 'portal.png').then((wut) => {
       this.context.fill();
     }
   });
-  let quasInfo = kontra.sprite({
+  let firstOrb = kontra.sprite({
+    x: midX - 60,
     y: midY,
     width: 40,
     height: 40,
-    color:'#33FFF8',
+    color: 'white',
     radius: 25,
     render: function() {
       this.context.fillStyle = this.color;
@@ -131,11 +135,12 @@ kontra.assets.load('mage.png', 'portal.png').then((wut) => {
       this.context.fill();
     }
   });
-  let wexInfo = kontra.sprite({
+  let secondOrb = kontra.sprite({
+    x: midX,
     y: midY,
     width: 40,
     height: 40,
-    color:'#EC18FF',
+    color: 'white',
     radius: 25,
     render: function() {
       this.context.fillStyle = this.color;
@@ -144,11 +149,12 @@ kontra.assets.load('mage.png', 'portal.png').then((wut) => {
       this.context.fill();
     }
   });
-  let exortInfo = kontra.sprite({
+  let thirdOrb = kontra.sprite({
+    x: midX + 60,
     y: midY,
     width: 40,
     height: 40,
-    color:'#FF6C00',
+    color: 'white',
     radius: 25,
     render: function() {
       this.context.fillStyle = this.color;
@@ -234,7 +240,6 @@ kontra.assets.load('mage.png', 'portal.png').then((wut) => {
       quasParticles();
       typedCode = typedCode + 'q';
     }
-
     if(keyName === 'w') {
       wexParticles();
       typedCode = typedCode + 'w';
@@ -243,20 +248,23 @@ kontra.assets.load('mage.png', 'portal.png').then((wut) => {
       exortParticles();
       typedCode = typedCode + 'e';
     }
-    // Ulti controls
+    // Ulti control
     if(keyName === 'r') {
-      ultiPressed = true;
       ultiSound.play();
       startShake();
 
       if(typedCode === randomSelectedCombo) {
-        loseBackground.y += 5;
+        loseBackground.y += 14;
         randomSelectedCombo = getRandomCombo();
+        console.log('%c New combo: %c' + randomSelectedCombo.toUpperCase(), 'color: #2ecc71; font-size: 16px', 'padding: 2px; background: black; color: orange; font-size: 16px;');
+
         typedCode = '';
       }
       else {
         loseBackground.y -= 5;
         typedCode = '';
+        randomSelectedCombo = getRandomCombo();
+        console.log('%c New combo: %c' + randomSelectedCombo.toUpperCase(), 'color: #c0392b; font-size: 16px', 'padding: 2px; background: black; color: #8e44ad; font-size: 16px;');
       }
       
     } 
@@ -269,11 +277,11 @@ kontra.assets.load('mage.png', 'portal.png').then((wut) => {
         player.update();
         quasEffect.update();
         wexEffect.update();
-        exortEffect.update();
+        exortEffect.update(); 
         pool.update();
-        quasInfo.update();
-        wexInfo.update();
-        exortInfo.update();
+        firstOrb.update();
+        secondOrb.update();
+        thirdOrb.update();
 
         /* Elements with tweens */
         if(quasEffect.y > midY + 230) {
@@ -294,37 +302,35 @@ kontra.assets.load('mage.png', 'portal.png').then((wut) => {
         if(exortEffect.y < midY + 205) {
           exortEffect.dy += 0.1;
         }
-        
+
         // Orbs info
         if(randomSelectedCombo.charAt(0) === 'q') {
-          quasInfo.x = midX - 60;
+          firstOrb.color = colors.quas;
         }
         if(randomSelectedCombo.charAt(0) === 'w') {
-          wexInfo.x = midX - 60;
+          firstOrb.color = colors.wex;
         }
         if(randomSelectedCombo.charAt(0) === 'e') {
-          exortInfo.x = midX - 60;
+          firstOrb.color = colors.exort;
         }
         if(randomSelectedCombo.charAt(1) === 'q') {
-          quasInfo.x = midX;
+          secondOrb.color = colors.quas;
         }
         if(randomSelectedCombo.charAt(1) === 'w') {
-          wexInfo.x = midX;
+          secondOrb.color = colors.wex;
         }
         if(randomSelectedCombo.charAt(1) === 'e') {
-          exortInfo.x = midX;
+          secondOrb.color = colors.exort;
         }
         if(randomSelectedCombo.charAt(2) === 'q') {
-          quasInfo.x = midX + 60;
+          thirdOrb.color = colors.quas;
         }
         if(randomSelectedCombo.charAt(2) === 'w') {
-          wexInfo.x = midX + 60;
+          thirdOrb.color = colors.wex;
         }
         if(randomSelectedCombo.charAt(2) === 'e') {
-          exortInfo.x = midX + 60;
+          thirdOrb.color = colors.exort;
         }
-
-
         
 
         // Start timer for the challenge!
@@ -343,8 +349,6 @@ kontra.assets.load('mage.png', 'portal.png').then((wut) => {
         }
         // It's a win!
         if(loseBackground.y >= kontra.canvas.height) {
-          console.log('WIN');
-          win = 1;
 
           if(modalShowed === false) {
             modalContent.innerHTML = "<span style='color: #1ED760'>Congratz! You've made through portal!</span>";
@@ -382,9 +386,9 @@ kontra.assets.load('mage.png', 'portal.png').then((wut) => {
 
         pool.render();
 
-        quasInfo.render();
-        wexInfo.render();
-        exortInfo.render();
+        firstOrb.render();
+        secondOrb.render();
+        thirdOrb.render();
         
       }
     });
